@@ -24,5 +24,14 @@ class Osoba(models.Model):
     def __str__(self):
         return f"{self.imie} {self.nazwisko}"
 
+    def clean(self):
+        if not re.match(r'^[A-Za-z]+$', self.imie):
+            raise ValidationError({'imie': 'Imię może zawierać tylko litery.'})
+        if not re.match(r'^[A-Za-z]+$', self.nazwisko):
+            raise ValidationError({'nazwisko': 'Nazwisko może zawierać tylko litery.'})
+
+        if self.data_dodania > timezone.now():
+            raise ValidationError({'data_dodania': 'Data dodania nie może być z przyszłości.'})
+
     class Meta:
         ordering = ['nazwisko']
